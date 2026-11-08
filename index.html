@@ -178,14 +178,33 @@ footer{padding:32px 0 40px;color:var(--muted);font-size:14px;border-top:2px soli
     </div>
   </section>
 
-  <section id="projects">
-    <h2 class="sec">Projects</h2>
-    <p class="sub">Pick a technology to see where I’ve used it.</p>
-    <div class="chips" id="chips" role="group" aria-label="Filter projects"></div>
-    <div id="list"></div>
-    <div class="btns" style="margin-top:28px"><a class="btn primary" href="https://github.com/Ansafaf">See all code on GitHub</a></div>
-  </section>
+ <section id="projects">
+  <div class="section-heading">
+    <h2 class="sec">Featured Projects</h2>
+    <p class="sub">
+      A selection of full-stack applications I’ve built using modern web technologies.
+    </p>
+  </div>
 
+  <!-- Project filters -->
+  <div class="chips" id="chips" role="group" aria-label="Filter projects"></div>
+
+  <!-- Project cards will be rendered here by JavaScript -->
+  <div id="list" class="projects-grid"></div>
+
+  <!-- GitHub CTA -->
+  <div class="btns" style="margin-top:28px">
+    <a
+      class="btn primary"
+      href="https://github.com/Ansafaf"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      View all projects on GitHub
+    </a>
+  </div>
+</section>
+  
   <section id="skills">
     <h2 class="sec">Skills</h2>
     <p class="sub">What I work with day to day.</p>
@@ -238,34 +257,108 @@ footer{padding:32px 0 40px;color:var(--muted);font-size:14px;border-top:2px soli
 
 <script>
 var PROJECTS=[
- {t:"Full-stack user management system",d:"Registration, login and admin features with role-based access, one-time admin setup and route protection. Full CRUD on users through a responsive admin dashboard, with MongoDB and Mongoose handling storage and validation.",s:["React","Node/Express","MongoDB","JWT"]},
- {t:"E-commerce application",d:"Full-stack MERN store with authentication, product management and user features.",s:["React","Node/Express","MongoDB","JWT"]},
- {t:"Mobile phone e-commerce interface",d:"Responsive store with 9 smartphone models, Add to Cart and Buy Now, a mobile-first Bootstrap grid and a card-based layout with product filtering.",s:["HTML/CSS","Bootstrap"]},
- {t:"Netflix clone",d:"React app that loads movies from the TMDB API and signs people in with Firebase Authentication.",s:["React","Firebase"]},
- {t:"OLX clone",d:"Marketplace where people list products, built with React, Firebase and Firestore.",s:["React","Firebase"]},
- {t:"Express authentication system",d:"Session-based login using Express middleware for route protection, server-rendered EJS pages and clear error messages.",s:["Node/Express"]},
- {t:"SevenUp and Aquafina website clones",d:"Responsive recreations of both brand sites with smooth animations, semantic HTML and cross-browser support.",s:["HTML/CSS"]}
+  {
+    t:"Full-stack user management system",
+    d:"Registration, login and admin features with role-based access, one-time admin setup and route protection. Full CRUD on users through a responsive admin dashboard, with MongoDB and Mongoose handling storage and validation.",
+    s:["React","Node/Express","MongoDB","JWT"]
+  },
+  {
+    t:"E-commerce application",
+    d:"Full-stack e-commerce application built with server-side rendered EJS pages, Express.js and MongoDB, featuring authentication, product management and user features.",
+    s:["EJS","Node/Express","MongoDB"]
+  },
+  {
+    t:"Mobile phone e-commerce interface",
+    d:"Responsive store with 9 smartphone models, Add to Cart and Buy Now, a mobile-first Bootstrap grid and a card-based layout with product filtering.",
+    s:["HTML/CSS","Bootstrap"]
+  },
+  {
+    t:"Netflix clone",
+    d:"React app that loads movies from the TMDB API and signs people in with Firebase Authentication.",
+    s:["React","Firebase"]
+  },
+  {
+    t:"OLX clone",
+    d:"Marketplace where people list products, built with React, Firebase and Firestore.",
+    s:["React","Firebase"]
+  },
+  {
+    t:"Express authentication system",
+    d:"Session-based login using Express middleware for route protection, server-rendered EJS pages and clear error messages.",
+    s:["Node/Express"]
+  },
+  {
+    t:"SevenUp and Aquafina website clones",
+    d:"Responsive recreations of both brand sites with smooth animations, semantic HTML and cross-browser support.",
+    s:["HTML/CSS"]
+  }
 ];
-var FILTERS=["All","React","Node/Express","MongoDB","JWT","Firebase","HTML/CSS"];
-var list=document.getElementById("list"),chips=document.getElementById("chips");
-function esc(x){return x.replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+
+var FILTERS=["All","React","Node/Express","MongoDB","JWT","Firebase","EJS","HTML/CSS","Bootstrap"];
+
+var list=document.getElementById("list"),
+    chips=document.getElementById("chips");
+
+function esc(x){
+  return x.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+}
+
 list.innerHTML=PROJECTS.map(function(p){
-  return '<article class="proj" data-s="'+p.s.join("|")+'"><div><h3>'+esc(p.t)+'</h3><p>'+esc(p.d)+'</p></div><div class="tags">'+p.s.map(function(t){return '<span class="tag">'+esc(t)+'</span>'}).join("")+'</div></article>';
+  return '<article class="proj" data-s="'+p.s.join("|")+'">' +
+    '<div>' +
+      '<h3>'+esc(p.t)+'</h3>' +
+      '<p>'+esc(p.d)+'</p>' +
+    '</div>' +
+    '<div class="tags">' +
+      p.s.map(function(t){
+        return '<span class="tag">'+esc(t)+'</span>';
+      }).join("") +
+    '</div>' +
+  '</article>';
 }).join("");
-chips.innerHTML=FILTERS.map(function(f,i){return '<button class="chip" type="button" aria-pressed="'+(i===0)+'" data-f="'+f+'">'+f+'</button>'}).join("");
+
+chips.innerHTML=FILTERS.map(function(f,i){
+  return '<button class="chip" type="button" aria-pressed="'+(i===0)+'" data-f="'+f+'">'+f+'</button>';
+}).join("");
+
 chips.addEventListener("click",function(e){
-  var b=e.target.closest(".chip");if(!b)return;
+  var b=e.target.closest(".chip");
+  if(!b)return;
+
   var f=b.getAttribute("data-f");
-  chips.querySelectorAll(".chip").forEach(function(c){c.setAttribute("aria-pressed",c===b)});
+
+  chips.querySelectorAll(".chip").forEach(function(c){
+    c.setAttribute("aria-pressed",c===b);
+  });
+
   list.querySelectorAll(".proj").forEach(function(r){
-    r.hidden=!(f==="All"||r.getAttribute("data-s").split("|").indexOf(f)>-1);
+    r.hidden=!(
+      f==="All" ||
+      r.getAttribute("data-s").split("|").indexOf(f)>-1
+    );
   });
 });
+
 /* request path animation: runs once on load, then stops */
-var layers=document.querySelectorAll(".layer"),n=0;
+var layers=document.querySelectorAll(".layer"),
+    n=0;
+
 var timer=setInterval(function(){
-  layers.forEach(function(l,i){l.classList.toggle("on",i===n)});
-  n++;if(n>2){clearInterval(timer);setTimeout(function(){layers.forEach(function(l){l.classList.remove("on")})},700)}
+  layers.forEach(function(l,i){
+    l.classList.toggle("on",i===n);
+  });
+
+  n++;
+
+  if(n>2){
+    clearInterval(timer);
+
+    setTimeout(function(){
+      layers.forEach(function(l){
+        l.classList.remove("on");
+      });
+    },700);
+  }
 },650);
 </script>
 </body>
